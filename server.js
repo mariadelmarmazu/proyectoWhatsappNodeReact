@@ -79,8 +79,19 @@ const downloadImage = async (url, filepath) => {
     const response = await axios({
         url,
         method: 'GET',
-        responseType: 'stream'
-    });
+        responseType: 'stream',
+        auth: {
+            username: process.env.TWILIO_ACCOUNT_SID,
+            password: process.env.TWILIO_AUTH_TOKEN
+          }
+    });/*
+    return new Promise((resolve, reject) => {
+        const writer = require('fs').createWriteStream(filepath);
+        response.data.pipe(writer);
+        writer.on('finish', resolve);
+        writer.on('error', reject);
+      });
+    };*/
     return new Promise((resolve, reject) => {
         const writer = fs.createWriteStream(filepath);
         response.data.pipe(writer);
@@ -159,6 +170,6 @@ app.post('/whatsapp', async (req, res) => {
 });
 
 // Iniciamos el servidor en el puerto 3000
-app.listen(3000, () => {
-    console.log('Servidor iniciado en el puerto 3000');
+app.listen(process.env.PORT, () => {
+    console.log('Servidor iniciado en el puerto 3030');
 });
