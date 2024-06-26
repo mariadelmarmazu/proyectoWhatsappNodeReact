@@ -8,10 +8,12 @@ const fs = require('fs');
 const twilio = require('twilio');
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
+const cors = require('cors');
 require('dotenv').config();
 
 // Configuración del servidor Express
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -168,6 +170,19 @@ app.post('/whatsapp', async (req, res) => {
         res.status(500).send('Ocurrió un error');
     }
 });
+
+
+//obtener los articulos de la tienda
+app.get('/tienda', (req, res) => {
+    const query = 'SELECT * FROM articulos';
+    db.query(query, (err, results) => {
+        if (err) {
+            return res.status(500).send('Ocurrió un error al obtener los artículos');
+        }
+        res.json(results);
+    });
+});
+
 
 // Iniciamos el servidor en el puerto 3000
 app.listen(process.env.PORT, () => {
